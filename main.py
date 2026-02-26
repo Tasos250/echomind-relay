@@ -75,5 +75,5 @@ def whisper(body: WhisperReq):
         input=transcript,
     )
 
-    text = (resp.output_text or "").strip() or "Repeat calmly. Ask one question."
+    text = (resp.output[0].content[0].text.strip()
     return WhisperResp(text=text)
