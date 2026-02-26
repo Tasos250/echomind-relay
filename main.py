@@ -59,7 +59,8 @@ def whisper(body: WhisperReq):
     if client is None:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
 
-    transcript = (body.user or "").strip()
+    transcript = ( getattr (body, "user",None) or getattr(body, "text", None)
+                  or getattr(body,"message", None) or"" ) . strip()
     if not transcript:
         raise HTTPException(status_code=400, detail="Missing 'user' transcript")
 
