@@ -16,6 +16,13 @@ MAX_WORDS_DEFAULT = int(os.getenv("MAX_WORDS_DEFAULT", "8"))
 client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
 app = FastAPI(title="EchoMind OpenAI Relay", version="0.1.0")
+@app.get("/")
+def root():
+    return {"status":"ok"}
+    
+    @app.get("/health")
+    def health():
+        return{"ok": true}
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
