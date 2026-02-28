@@ -83,4 +83,7 @@ def whisper(body: WhisperReq):
 
     text = resp.output[0].content[0].text.strip()
 
-    return WhisperResp(text=text)
+    return {
+    "text": text,
+    "reply": text
+}
