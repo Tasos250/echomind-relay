@@ -73,4 +73,4 @@ def whisper(body: WhisperReq):
     )
 
     text = (resp.output_text or "").strip() or "OK."
-    return WhisperResp(text=text))
+    return WhisperResp(text=text)
