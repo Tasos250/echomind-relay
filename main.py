@@ -1,6 +1,6 @@
-
 import os
 from typing import Optional, Literal, Dict, Any
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -16,13 +16,7 @@ MAX_WORDS_DEFAULT = int(os.getenv("MAX_WORDS_DEFAULT", "8"))
 client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
 app = FastAPI(title="EchoMind OpenAI Relay", version="0.1.0")
-@app.get("/")
-def root():
-    return {"status":"ok"}
-    
-    @app.get("/health")
-    def health():
-        return{"ok": true}
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -35,11 +29,15 @@ class WhisperReq(BaseModel):
     system: str = Field(default="Respond professionally.")
     user: str
     maxWords: Optional[int] = None
-    tone: Optional[Literal["professional","friendly","confident","negotiator","ultra_short"]] = None
+    tone: Optional[Literal["professional", "friendly", "confident", "negotiator", "ultra_short"]] = None
     meta: Dict[str, Any] = Field(default_factory=dict)
 
 class WhisperResp(BaseModel):
     text: str
+
+@app.get("/")
+def root():
+    return {"status": "ok"}
 
 @app.get("/health")
 def health():
@@ -59,8 +57,7 @@ def whisper(body: WhisperReq):
     if client is None:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
 
-    transcript = ( getattr (body, "user",None) or getattr(body, "text", None)
-                  or getattr(body,"message", None) or"" ) . strip()
+    transcript = (body.user or "").strip()
     if not transcript:
         raise HTTPException(status_code=400, detail="Missing 'user' transcript")
 
@@ -75,5 +72,5 @@ def whisper(body: WhisperReq):
         input=transcript,
     )
 
-    text = (resp.output[0].content[0].text.strip())
-    return WhisperResp(text=text)
+    text = (resp.output_text or "").strip() or "OK."
+    return WhisperResp(text=text))
