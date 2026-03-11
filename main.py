@@ -50,8 +50,10 @@ def build_instructions(system: str, max_words: int) -> str:
 Return ONLY the final reply.
 Do NOT include the word "whisper".
 Do NOT include explanations.
-
-Answer in ENGLISH using at most {max_words} words.
+Do NOT use quotation marks.
+Keep the answer natural, short, and easy to speak aloud.
+Prefer 3 to {max_words} words.
+If possible, sound confident and useful.
 
 CHARACTER:
 {system}
@@ -75,7 +77,7 @@ def whisper(body: WhisperReq):
         raise HTTPException(status_code=400, detail="Missing transcript")
 
     max_words = int(body.maxWords or MAX_WORDS_DEFAULT)
-    max_words = max(1, min(max_words, 20))
+    max_words = max(3, min(max_words, 10))
 
     instructions = build_instructions(body.system, max_words)
 
