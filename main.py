@@ -46,8 +46,12 @@ class WhisperResp(BaseModel):
 
 def build_instructions(system: str, max_words: int) -> str:
     return f"""You are EchoMind, an AI conversation coach.
-Answer in ENGLISH with at most {max_words} words.
-No explanations. Only the whisper reply.
+
+Return ONLY the final reply.
+Do NOT include the word "whisper".
+Do NOT include explanations.
+
+Answer in ENGLISH using at most {max_words} words.
 
 CHARACTER:
 {system}
